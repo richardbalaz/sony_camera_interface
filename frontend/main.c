@@ -9,17 +9,21 @@
 int encoder_previous_state = 0;
 
 enum commands {
-    EXPOSURE_INC = 0x00,
-    EXPOSURE_DEC = 0x01
+    EXPOSURE_INC    = 0x00,
+    EXPOSURE_DEC    = 0x01,
+
+    BUTTON_EXP      = 0x02,
+    BUTTON_OK       = 0x03,
+    BUTTON_SW       = 0x04
 };
 
-/* Transmits 5 LSB bits to transmit line */
+/* Transmits 4 LSB bits to transmit line */
 void shift_data_out(uint8_t data)
 {
     PORTB &= ~(1 << PB2);
     _delay_us(CLK_DELAY);
     int i;
-    for (i = 0x01; i <= 0x10; i <<= 1) {
+    for (i = 0x01; i <= 0x08; i <<= 1) {
         if (data & i)
             PORTB |= (1 << PB2);
         else
