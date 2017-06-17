@@ -31,7 +31,7 @@ void receive_command()
     uint8_t cmd = 0;
     _delay_us(CLK_DELAY + (CLK_DELAY / 2.0));
 
-    int i, rec;
+    int i;
     for (i = 0; i < 4; i++) {
         cmd |= (PINB & (1 << PB0)) ? (1 << i) : 0;
         _delay_us(CLK_DELAY);
