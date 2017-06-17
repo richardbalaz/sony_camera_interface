@@ -7,12 +7,12 @@
 #define CLK_DELAY 10
 
 /* Used to identify rising-edge of pin A */
-int encoder_previous_state = 0;
+int encoder_prev_state = 0;
 
-/* Storing previous state of buttons to identify falling-edges */
-volatile int previous_state_button_exp = 1;
-volatile int previous_state_button_ok = 1;
-volatile int previous_state_button_sw = 1;
+/* Storing prev state of buttons to identify falling-edges */
+volatile int prev_state_button_exp = 1;
+volatile int prev_state_button_ok = 1;
+volatile int prev_state_button_sw = 1;
 
 enum commands {
     EXPOSURE_INC,
@@ -43,13 +43,13 @@ void shift_data_out(uint8_t data)
 void read_exposure_encoder(void)
 {
     int pin_a = PINB & (1 << PB0);
-    if (pin_a == 0 && encoder_previous_state != 0) {
+    if (pin_a == 0 && encoder_prev_state != 0) {
         if ((PINB & (1 << PB1)) == 0)
             shift_data_out(EXPOSURE_DEC);
         else
             shift_data_out(EXPOSURE_INC);
     }
-    encoder_previous_state = pin_a;
+    encoder_prev_state = pin_a;
 }
 
 /* Send command via transmit line when button pressed (falling-edge) */
@@ -59,16 +59,16 @@ ISR(PCINT0_vect)
     int actual_state_button_ok = PINB & (1 << PB4);
     int actual_state_button_sw = PINB & (1 << PB5);
 
-    if (previous_state_button_exp != 0 && actual_state_button_exp == 0)
+    if (prev_state_button_exp != 0 && actual_state_button_exp == 0)
         shift_data_out(BUTTON_EXP);
-    else if (previous_state_button_ok != 0 && actual_state_button_ok == 0)
+    else if (prev_state_button_ok != 0 && actual_state_button_ok == 0)
         shift_data_out(BUTTON_OK);
-    else if (previous_state_button_sw != 0 && actual_state_button_sw == 0)
+    else if (prev_state_button_sw != 0 && actual_state_button_sw == 0)
         shift_data_out(BUTTON_SW);
 
-    previous_state_button_exp = actual_state_button_exp;
-    previous_state_button_ok = actual_state_button_ok;
-    previous_state_button_sw = actual_state_button_sw;
+    prev_state_button_exp = actual_state_button_exp;
+    prev_state_button_ok = actual_state_button_ok;
+    prev_state_button_sw = actual_state_button_sw;
 }
 
 int main(void)
