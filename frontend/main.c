@@ -4,7 +4,7 @@
 #define F_CPU 9600000L
 #include <util/delay.h>
 
-#define CLK_DELAY 10
+#define CLK_DELAY 100
 
 /* Used to identify rising-edge of pin A */
 int encoder_prev_state = 0;

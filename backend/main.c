@@ -3,7 +3,7 @@
 #define F_CPU 9600000L
 #include <util/delay.h>
 
-#define CLK_DELAY 10
+#define CLK_DELAY 100
 
 enum commands {
     EXPOSURE_INC,
