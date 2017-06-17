@@ -9,7 +9,7 @@
 /* Used to identify rising-edge of pin A */
 int encoder_prev_state = 0;
 
-/* Storing prev state of buttons to identify falling-edges */
+/* Storing previous state of buttons to identify falling-edges */
 volatile int prev_state_button_exp = 1;
 volatile int prev_state_button_ok = 1;
 volatile int prev_state_button_sw = 1;
