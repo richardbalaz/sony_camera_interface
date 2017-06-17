@@ -16,9 +16,24 @@ enum commands {
 
 void exposure_inc() {}
 void exposure_dec() {}
-void button_exp() {}
-void button_ok() {}
-void button_sw() {}
+
+void button_exp() {
+    PORTB |= (1 << PB3);
+    _delay_ms(BUTTON_PRESS_LENGHT);
+    PORTB &= ~(1 << PB3)
+}
+
+void button_ok() {
+    PORTB |= (1 << PB4);
+    _delay_ms(BUTTON_PRESS_LENGHT);
+    PORTB &= ~(1 << PB4);
+}
+
+void button_sw() {
+    PORTB |= (1 << PB5);
+    _delay_ms(BUTTON_PRESS_LENGHT);
+    PORTB &= ~(1 << PB5);
+}
 
 /* This function handles receiving the command from frontend */
 void receive_command()
@@ -63,9 +78,9 @@ int main(void)
     PORTB |= (1 << PB0);
     DDRB &= ~(1 << PB0);
 
-    /* Setup input ports for buttons */
-    PORTB |= (1 << PB3) | (1 << PB4) | (1 << PB5);
-    DDRB &= ~((1 << PB3) | (1 << PB4) | (1 << PB5));
+    /* Setup output ports for buttons */
+    PORTB &= ~(1 << PB3) | (1 << PB4) | (1 << PB5);
+    DDRB |= (1 << PB3) | (1 << PB4) | (1 << PB5);
 
     /* Setup output ports for emulated exposure rotary encoder */
     PORTB |= (1 << PB1) | (1 << PB2);
