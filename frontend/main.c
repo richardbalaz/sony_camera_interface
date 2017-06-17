@@ -1,4 +1,5 @@
 #include <avr/io.h>
+#include <avr/interrupt.h>
 
 #define F_CPU 9600000L
 #include <util/delay.h>
@@ -8,13 +9,18 @@
 /* Used to identify rising-edge of pin A */
 int encoder_previous_state = 0;
 
-enum commands {
-    EXPOSURE_INC    = 0x00,
-    EXPOSURE_DEC    = 0x01,
+/* Storing previous state of buttons to identify falling-edges */
+volatile int previous_state_button_exp = 1;
+volatile int previous_state_button_ok = 1;
+volatile int previous_state_button_sw = 1;
 
-    BUTTON_EXP      = 0x02,
-    BUTTON_OK       = 0x03,
-    BUTTON_SW       = 0x04
+enum commands {
+    EXPOSURE_INC,
+    EXPOSURE_DEC,
+
+    BUTTON_EXP,
+    BUTTON_OK,
+    BUTTON_SW
 };
 
 /* Transmits 4 LSB bits to transmit line */
@@ -46,6 +52,25 @@ void read_exposure_encoder(void)
     encoder_previous_state = pin_a;
 }
 
+/* Send command via transmit line when button pressed (falling-edge) */
+ISR(PCINT0_vect)
+{
+    int actual_state_button_exp = PINB & (1 << PB3);
+    int actual_state_button_ok = PINB & (1 << PB4);
+    int actual_state_button_sw = PINB & (1 << PB5);
+
+    if (previous_state_button_exp != 0 && actual_state_button_exp == 0)
+        shift_data_out(BUTTON_EXP);
+    else if (previous_state_button_ok != 0 && actual_state_button_ok == 0)
+        shift_data_out(BUTTON_OK);
+    else if (previous_state_button_sw != 0 && actual_state_button_sw == 0)
+        shift_data_out(BUTTON_SW);
+
+    previous_state_button_exp = actual_state_button_exp;
+    previous_state_button_ok = actual_state_button_ok;
+    previous_state_button_sw = actual_state_button_sw;
+}
+
 int main(void)
 {
     /* Setup input ports for exposure rotary encoder */
@@ -55,6 +80,15 @@ int main(void)
     /* Setup output port for transmit line */
     PORTB |= (1 << PB2);
     DDRB |= (1 << PB2);
+
+    /* Setup input ports for buttons */
+    PORTB |= (1 << PB3) | (1 << PB4) | (1 << PB5);
+    DDRB &= ~((1 << PB3) | (1 << PB4) | (1 << PB5));
+
+    /* Enable pin change interrupt on button's ports */
+    GIFR = 0x20;
+    PCMSK = 0x38;
+    sei();
 
     while (1) {
         read_exposure_encoder();
