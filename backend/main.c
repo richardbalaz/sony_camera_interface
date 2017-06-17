@@ -4,6 +4,7 @@
 #include <util/delay.h>
 
 #define CLK_DELAY 100
+#define BUTTON_PRESS_LENGHT 120
 
 enum commands {
     EXPOSURE_INC,
