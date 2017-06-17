@@ -23,3 +23,23 @@ Exposure menu - *PB3*
 Submit (OK) - *PB4*
 
 Reserved - *PB5*
+
+### Hardware wiring on backend
+
+**Receive line**
+
+RX - *PB0*
+
+**Emulated rotary encoder**
+
+A - *PB1*
+
+B - *PB2*
+
+**Emulated buttons**
+
+Exposure menu - *PB3*
+
+Submit (OK) - *PB4*
+
+Reserved - *PB5*
