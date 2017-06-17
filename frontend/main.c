@@ -9,8 +9,8 @@
 int encoder_previous_state = 0;
 
 enum commands {
-    ENCODER_INC = 0x00,
-    ENCODER_DEC = 0x01
+    EXPOSURE_INC = 0x00,
+    EXPOSURE_DEC = 0x01
 };
 
 /* Transmits 5 LSB bits to transmit line */
@@ -30,21 +30,21 @@ void shift_data_out(uint8_t data)
 }
 
 /* Checks if there is a rotation made by human */
-void read_rotary_encoder(void)
+void read_exposure_encoder(void)
 {
     int pin_a = PINB & (1 << PB0);
     if (pin_a == 0 && encoder_previous_state != 0) {
         if ((PINB & (1 << PB1)) == 0)
-            shift_data_out(ENCODER_DEC);
+            shift_data_out(EXPOSURE_DEC);
         else
-            shift_data_out(ENCODER_INC);
+            shift_data_out(EXPOSURE_INC);
     }
     encoder_previous_state = pin_a;
 }
 
 int main(void)
 {
-    /* Setup input ports for rotary encoder */
+    /* Setup input ports for exposure rotary encoder */
     PORTB |= (1 << PB0) | (1 << PB1);
     DDRB &= ~((1 << PB0) | (1 << PB1));
 
@@ -53,6 +53,6 @@ int main(void)
     DDRB |= (1 << PB2);
 
     while (1) {
-        read_rotary_encoder();
+        read_exposure_encoder();
     }
 }
