@@ -5,6 +5,7 @@
 
 #define CLK_DELAY 100
 #define BUTTON_PRESS_LENGHT 120
+#define ENCODER_HOLD_LENGHT 5
 
 enum commands {
     EXPOSURE_INC,
@@ -38,7 +39,7 @@ void exposure_dec() {
 void button_exp() {
     PORTB |= (1 << PB3);
     _delay_ms(BUTTON_PRESS_LENGHT);
-    PORTB &= ~(1 << PB3)
+    PORTB &= ~(1 << PB3);
 }
 
 void button_ok() {
