@@ -1,4 +1,4 @@
-# sony_camera_interface
+# Sony Camera Interface
 Remote interface for Sony cameras driven from MCU (Atmel ATtiny13A)
 
 Camera has one built-in rotary encoder for exposure changes, one button for changes menu enter and one button for OK. There is one more button for reserved purpose.
