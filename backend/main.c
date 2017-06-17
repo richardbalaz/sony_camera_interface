@@ -15,8 +15,25 @@ enum commands {
     BUTTON_SW
 };
 
-void exposure_inc() {}
-void exposure_dec() {}
+void exposure_inc() {
+    PORTB &= ~(1 << PB1);
+    _delay_ms(ENCODER_HOLD_LENGHT);
+    PORTB &= ~(1 << PB2);
+    _delay_ms(ENCODER_HOLD_LENGHT);
+    PORTB |= (1 << PB1);
+    _delay_ms(ENCODER_HOLD_LENGHT);
+    PORTB |= (1 << PB2);
+}
+
+void exposure_dec() {
+    PORTB &= ~(1 << PB2);
+    _delay_ms(ENCODER_HOLD_LENGHT);
+    PORTB &= ~(1 << PB1);
+    _delay_ms(ENCODER_HOLD_LENGHT);
+    PORTB |= (1 << PB2);
+    _delay_ms(ENCODER_HOLD_LENGHT);
+    PORTB |= (1 << PB1);
+}
 
 void button_exp() {
     PORTB |= (1 << PB3);
