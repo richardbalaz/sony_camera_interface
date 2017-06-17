@@ -22,7 +22,7 @@ Exposure menu - *PB3*
 
 Submit (OK) - *PB4*
 
-Reserved - *PB5*
+Reserved button - *PB5*
 
 ### Hardware wiring on backend
 
@@ -42,4 +42,4 @@ Exposure menu - *PB3*
 
 Submit (OK) - *PB4*
 
-Reserved - *PB5*
+Reserved button - *PB5*
