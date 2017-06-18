@@ -14,6 +14,14 @@ volatile int prev_state_button_exp = 1;
 volatile int prev_state_button_ok = 1;
 volatile int prev_state_button_sw = 1;
 
+/*
+ * This bits are set if buttons are pressed
+ * and after the command is sent they are cleared
+ */
+volatile int is_button_exp_pressed = 0;
+volatile int is_button_ok_pressed = 0;
+volatile int is_button_sw_pressed = 0;
+
 enum commands {
     EXPOSURE_INC,
     EXPOSURE_DEC,
@@ -52,7 +60,22 @@ void read_exposure_encoder(void)
     encoder_prev_state = pin_a;
 }
 
-/* Send command via transmit line when button pressed (falling-edge) */
+/* Send command if button was pressed */
+void send_button_command(void)
+{
+    if (is_button_exp_pressed) {
+        shift_data_out(BUTTON_EXP);
+        is_button_exp_pressed = 0;
+    } else if (is_button_ok_pressed) {
+        shift_data_out(BUTTON_OK);
+        is_button_ok_pressed = 0;
+    } else if (is_button_sw_pressed) {
+        shift_data_out(BUTTON_SW);
+        is_button_sw_pressed = 0;
+    }
+}
+
+/* Trigger command sending via transmit line when button pressed (falling-edge) */
 ISR(PCINT0_vect)
 {
     int actual_state_button_exp = PINB & (1 << PB3);
@@ -60,11 +83,11 @@ ISR(PCINT0_vect)
     int actual_state_button_sw = PINB & (1 << PB5);
 
     if (prev_state_button_exp != 0 && actual_state_button_exp == 0)
-        shift_data_out(BUTTON_EXP);
+        is_button_exp_pressed = 1;
     else if (prev_state_button_ok != 0 && actual_state_button_ok == 0)
-        shift_data_out(BUTTON_OK);
+        is_button_ok_pressed = 1;
     else if (prev_state_button_sw != 0 && actual_state_button_sw == 0)
-        shift_data_out(BUTTON_SW);
+        is_button_sw_pressed = 1;
 
     prev_state_button_exp = actual_state_button_exp;
     prev_state_button_ok = actual_state_button_ok;
@@ -92,5 +115,6 @@ int main(void)
 
     while (1) {
         read_exposure_encoder();
+        send_button_command();
     }
 }
