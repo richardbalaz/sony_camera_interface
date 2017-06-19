@@ -109,7 +109,7 @@ int main(void)
     DDRB &= ~((1 << PB3) | (1 << PB4) | (1 << PB5));
 
     /* Enable pin change interrupt on button's ports */
-    GIFR = 0x20;
+    GIMSK = 0x20;
     PCMSK = 0x38;
     sei();
 
