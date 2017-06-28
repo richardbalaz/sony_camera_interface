@@ -23,7 +23,7 @@ void exposure_inc() {
 
 void exposure_dec() {
     PORTB |= (1 << PB2);
-    _delay_ms(BUTTON_HOLD_LENGHT);
+    _delay_ms(BUTTON_PRESS_LENGHT);
     PORTB &= ~(1 << PB2);
 }
 
